@@ -1,1 +1,73 @@
-.
+# Projeto de Redes - API de Sessão Centralizada
+
+Este projeto é focado em demonstrar o gerenciamento de sessão de usuário em um ambiente distribuído.
+
+A API é construída em Spring Boot e utiliza um banco de dados PostgreSQL para armazenar usuários e sessões ativas. O objetivo é simular como um usuário pode permanecer logado mesmo quando um balanceador de carga (DNS Round Robin) o direciona para diferentes servidores.
+
+---
+
+## Tecnologias Utilizadas
+
+* Java 17
+* Spring Boot
+* PostgreSQL
+* Docker
+
+---
+
+## Pré-requisitos
+
+Para rodar este projeto, você **só precisa** ter duas coisas instaladas na sua máquina:
+
+1.  **Git** (para baixar o projeto)
+2.  **Docker Desktop** (para construir e rodar os servidores)
+
+O docker vai cuidar sozinho dos outros requisitos
+
+---
+
+## Como Rodar (Passo a Passo)
+
+Este projeto é 100% "Dockerizado". Siga estes passos para ter o ambiente completo (API + Banco de Dados) rodando com um único comando.
+
+### 1. Clone o Repositório
+
+Abra seu terminal e clone este projeto:
+
+```bash
+git clone https://github.com/fd4dg4br1/Arquitetura-Distribuida-DNS.git
+cd Arquitetura-Distribuida-DNS
+
+---
+
+### 2. Crie o Arquivo ".env"
+Nós não enviamos senhas para o GitHub (graças ao .gitignore). Você precisa criar seu próprio arquivo de segredos localmente. Este é o único passo manual.
+
+Na pasta raiz do projeto (onde você acabou de entrar), crie um novo arquivo chamado exatamente .env
+
+Copie e cole o conteúdo abaixo dentro dele:
+
+# Segredos do Banco de Dados
+DB_USER=nome-de-usuario
+DB_PASS=senha
+DB_NAME=nome-do-banco-de-dados
+
+(Por que isso? O arquivo docker-compose.yml vai ler essas variáveis para configurar o banco de dados e a sua aplicação Spring automaticamente, sem expor as senhas no código.)
+
+### 3. Suba o Ambiente (O Comando Mágico)
+Com o Docker Desktop aberto, rode o seguinte comando no seu **terminal**:
+
+'''bash
+
+docker-compose up --build
+'''
+
+Haverá um contêiner para o Banco de Dados PostgreSQL;
+Um contêiner para a API Spring Boot;
+
+### 4. Pronto!
+Se o terminal mostrar os logs da sua DnsApplication (Spring) sem erros, significa que a API está rodando e conectada ao banco!
+
+## Como Testar (Usando o Swagger)
+
+Abra seu navegador e acesse a documentação da API (Swagger): http://localhost:8080/swagger-ui/index.html
