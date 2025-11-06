@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db-redes
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    networks:
+      - rede-do-trabalho
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      
+      - ./init-db:/docker-entrypoint-initdb.d
+
+  app:
+    build: . 
+    container_name: backend-app-redes
+    ports:
+      - "8080:8080" 
+    depends_on:
+      - db 
+    environment:
+      # --- Configuração do Banco (lendo do .env) ---
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      
+      # --- AQUI ESTÁ A CORREÇÃO ---
+      # Força TODAS as configurações do JPA, ignorando o .yml
+      # 1. Força a criação/atualização das tabelas
+      - spring.jpa.hibernate.ddl-auto=update
+      
+      # 2. Mostra o SQL (bom para debug)
+      - spring.jpa.show-sql=true
+      
+      # 3. Força o nome do Schema (minúsculo)
+      - spring.jpa.properties.hibernate.default_schema=dns
+      
+      # 4. Força a correção de "case sensitive"
+      - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      
+    networks:
+      - rede-do-trabalho
+
+networks:
+  rede-do-trabalho:
+    driver: bridge
+volumes:
+  postgres-data:
