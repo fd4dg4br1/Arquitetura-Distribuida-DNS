@@ -47,10 +47,11 @@ Na pasta raiz do projeto (onde você acabou de entrar), crie um novo arquivo cha
 
 Copie e cole o conteúdo abaixo dentro dele:
 
-# Segredos do Banco de Dados
+'''bash
 DB_USER=nome-de-usuario
 DB_PASS=senha
 DB_NAME=nome-do-banco-de-dados
+'''
 
 (Por que isso? O arquivo docker-compose.yml vai ler essas variáveis para configurar o banco de dados e a sua aplicação Spring automaticamente, sem expor as senhas no código.)
 
@@ -65,7 +66,7 @@ docker-compose up --build
 Haverá um contêiner para o Banco de Dados PostgreSQL;
 Um contêiner para a API Spring Boot;
 
-### 4. Pronto!
+### 4. Tudo Pronto!
 Se o terminal mostrar os logs da sua DnsApplication (Spring) sem erros, significa que a API está rodando e conectada ao banco!
 
 ## Como Testar (Usando o Swagger)
