@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iesb.redes.dto.LoginRequestDTO;
+import com.iesb.redes.dto.LoginCredentialsDTO;
 import com.iesb.redes.dto.PerfilResponseDTO;
 import com.iesb.redes.model.Usuario;
 import com.iesb.redes.service.AutenticacaoService;
@@ -25,21 +26,19 @@ public class LoginController {
     @Autowired
     AutenticacaoService autenticacaoService;
 
-
-    @PostMapping(value="/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest, 
-                                        HttpServletResponse response){
+    @PostMapping(value = "/login")
+    public ResponseEntity<String> login(@RequestBody LoginCredentialsDTO loginRequest,
+            HttpServletResponse response) {
         try {
             // 4. Chama o service
             String idSessao = autenticacaoService.login(
-                loginRequest.getUsername(), 
-                loginRequest.getPassword()
-            );
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword());
 
             // 5. Cria o cookie manualmente
             Cookie sessionCookie = new Cookie("minha-sessao-id", idSessao);
             sessionCookie.setHttpOnly(true); // Segurança
-            sessionCookie.setPath("/");      // Disponível em todo o site
+            sessionCookie.setPath("/"); // Disponível em todo o site
             sessionCookie.setMaxAge(30 * 60); // Expira em 30 min
             // 6. Adiciona o cookie na resposta
             response.addCookie(sessionCookie);
@@ -50,8 +49,8 @@ public class LoginController {
         }
     }
 
-    //funcao de tela depois do login bem sucedido
-    @GetMapping(value="/meu-perfil")
+    // funcao de tela depois do login bem sucedido
+    @GetMapping(value = "/meu-perfil")
     public ResponseEntity<?> getPerfil(
             @CookieValue(name = "minha-sessao-id", required = false) String idSessao) {
 
@@ -71,10 +70,10 @@ public class LoginController {
     public ResponseEntity<String> registrar(@RequestBody LoginRequestDTO request) {
         try {
             Usuario novoUsuario = autenticacaoService.registrarNovoUsuario(request);
-            
+
             // Retorna uma resposta 201 (Created)
             return ResponseEntity.status(201)
-                                 .body("Usuário '" + novoUsuario.getUsername() + "' criado com sucesso!");
+                    .body("Usuário '" + novoUsuario.getUsername() + "' criado com sucesso!");
 
         } catch (RuntimeException e) {
             // Retorna 400 (Bad Request) se o username já existir
@@ -86,7 +85,7 @@ public class LoginController {
     public ResponseEntity<String> logout(
             @CookieValue(name = "minha-sessao-id", required = false) String idSessao,
             HttpServletResponse response) {
-        
+
         if (idSessao != null) {
             // 1. Manda o Service destruir a sessão no banco
             autenticacaoService.logout(idSessao);
