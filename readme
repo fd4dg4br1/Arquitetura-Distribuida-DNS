@@ -1,3 +1,4 @@
+---
 # Projeto de Redes — API de Sessão Centralizada
 
 API de exemplo em **Spring Boot** demonstrando **gerenciamento de sessão centralizada** (usuários e sessões armazenadas em **PostgreSQL**).
@@ -79,54 +80,6 @@ Acesse o frontend em:
 
 👉 **[http://localhost:5500/index.html](http://localhost:5500/index.html)**
 
----
-
-### **Opção B — Servir o Frontend pelo Backend**
-
-Copie os arquivos de `frontend/` para:
-
-```
-src/main/resources/static/
-```
-
-Depois rode:
-
-```bash
-./mvnw spring-boot:run
-```
-
-O próprio Spring servirá os arquivos estáticos (útil para evitar CORS e lidar diretamente com cookies same-origin).
-
----
-
-## 🍪 Observações sobre CORS e Cookies
-
-* Em origens diferentes, cookies normalmente exigem:
-  `SameSite=None; Secure` (HTTPS).
-* Durante o desenvolvimento, o backend já permite CORS de forma ampla.
-* O dev-proxy reescreve cookies, evitando problemas de cross-site.
-
----
-
-## 🔍 Testes Rápidos (curl)
-
-### Login (salvando cookie):
-
-```bash
-curl -i -c cookies.txt -X POST 'http://localhost:5500/api/login' \
-  -H 'Content-Type: application/json' \
-  -d '{"username":"user1","password":"123"}'
-```
-
-### Consultar o perfil:
-
-```bash
-curl -i -b cookies.txt -X GET 'http://localhost:5500/api/meu-perfil'
-```
-
-Se estiver usando o frontend servido pelo backend, troque `5500` por `8080`.
-
----
 
 ## 📘 Documentação (Swagger)
 
@@ -167,4 +120,4 @@ Com a aplicação rodando:
   Portas <1024 exigem root.
   O projeto usa padrão **8080** para evitar isso.
 
-
+---
