@@ -185,26 +185,25 @@ async function loadProfile() {
       const data = await response.json();
 
       // Preenche os dados do perfil
-      document.getElementById("profileName").textContent = data.username;
-      document.getElementById("profileUsername").textContent = data.username;
-      document.getElementById("profileEmail").textContent =
-        data.email || "Não fornecido";
+      document.getElementById("profileName").textContent = data.nomeUsuario;
 
       // Formata a data
-      if (data.criadoEm) {
-        const data_criacao = new Date(data.criadoEm);
-        const dataFormatada = data_criacao.toLocaleDateString("pt-BR", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-        document.getElementById("profileDate").textContent = dataFormatada;
-      }
+      // if (data.dataLogin) {
+      //   const data_criacao = new Date(data.dataLogin);
+      //   const dataFormatada = data_criacao.toLocaleDateString("pt-BR", {
+      //     year: "numeric",
+      //     month: "long",
+      //     day: "numeric",
+      //     hour: "2-digit",
+      //     minute: "2-digit",
+      //   });
+      //   document.getElementById("profileDate").textContent = dataFormatada;
+      // }
 
       loadingDiv.style.display = "none";
       contentDiv.style.display = "block";
+      // Indica que a sessão está ativa
+      return true;
     } else if (response.status === 401) {
       loadingDiv.style.display = "none";
       errorDiv.textContent = "Sessão expirada. Faça login novamente";
@@ -213,6 +212,7 @@ async function loadProfile() {
       setTimeout(() => {
         showSection("login");
       }, 2000);
+      return false;
     } else {
       throw new Error("Erro ao carregar perfil");
     }
@@ -221,6 +221,7 @@ async function loadProfile() {
     loadingDiv.style.display = "none";
     errorDiv.textContent = "Erro ao carregar perfil. Tente novamente";
     errorDiv.classList.add("show");
+    return false;
   }
 }
 
@@ -272,7 +273,24 @@ function updateNavigation(isLoggedIn) {
 
 // ===== INICIALIZAÇÃO =====
 document.addEventListener("DOMContentLoaded", () => {
-  updateNavigation(false);
+  // Ao carregar a página, tentamos restaurar a sessão do servidor.
+  // Se houver sessão válida, mostramos o perfil e atualizamos a navegação.
+  loadProfile()
+    .then((isLogged) => {
+      if (isLogged) {
+        updateNavigation(true);
+        // loadProfile já preencheu os dados e exibiu o conteúdo do profile
+        showSection("profile");
+      } else {
+        updateNavigation(false);
+        showSection("login");
+      }
+    })
+    .catch((e) => {
+      console.error("Erro ao verificar sessão:", e);
+      updateNavigation(false);
+      showSection("login");
+    });
 
   // Menu hamburger mobile
   const hamburger = document.getElementById("hamburger");
