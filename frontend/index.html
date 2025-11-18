@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Autenticação</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <!-- NAVBAR -->
     <nav class="navbar">
@@ -16,7 +18,7 @@
             <ul class="navbar-menu" id="navMenu">
                 <li id="navLogin"><a href="#" onclick="showSection('login')">Login</a></li>
                 <li id="navRegister"><a href="#" onclick="showSection('register')">Registrar</a></li>
-                <li id="navProfile" style="display:none"><a href="#" onclick="showSection('profile')">Meu Perfil</a></li>
+                <li id="navProfile" style="display:none"><a href="#" onclick="showProfileSection()">Meu Perfil</a></li>
                 <li id="navLogout" style="display:none"><a href="#" onclick="doLogout(event)">Sair</a></li>
             </ul>
             <div class="hamburger" id="hamburger">
@@ -34,15 +36,15 @@
             <div class="auth-box">
                 <h2>Fazer Login</h2>
                 <p class="subtitle">Acesse sua conta com suas credenciais</p>
-                
+
                 <div id="loginError" class="message error-msg"></div>
                 <div id="loginSuccess" class="message success-msg"></div>
-                
+
                 <form onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label for="loginUsername">Usuário:</label>
                         <input type="text" id="loginUsername" placeholder="Digite seu usuário" required>
-                    </div>
+                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Senha:</label>
                         <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
@@ -69,8 +71,12 @@
                         <input type="text" id="regUsername" placeholder="Escolha um usuário" minlength="3" required>
                     </div>
                     <div class="form-group">
+                        <label for="regUsername">Nome:</label>
+                        <input type="text" id="regName" placeholder="Digite seu nome" minlength="3" required>
+                    </div>
+                    <div class="form-group">
                         <label for="regPassword">Senha:</label>
-                        <input type="password" id="regPassword" placeholder="Crie uma senha" minlength="6" required>
+                        <input type="password" id="regPassword" placeholder="Crie uma senha" minlength="3" required>
                     </div>
                     <div class="form-group">
                         <label for="regConfirm">Confirmar Senha:</label>
@@ -92,7 +98,7 @@
                 </div>
 
                 <div id="profileError" class="message error-msg"></div>
-                
+
                 <div id="profileLoading" class="loading-container">
                     <div class="spinner"></div>
                     <p>Carregando seu perfil...</p>
@@ -102,7 +108,7 @@
                     <div class="profile-card">
                         <div class="profile-avatar">👤</div>
                         <h3 id="profileName"></h3>
-                        
+
                         <div class="profile-info">
                             <div class="info-item">
                                 <span class="info-label">Usuário:</span>
@@ -129,4 +135,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>

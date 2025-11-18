@@ -1,0 +1,12 @@
+{
+  "name": "arquitetura-distribuida-dns-dev",
+  "version": "1.0.0",
+  "description": "Dev proxy to serve frontend and forward /api to backend",
+  "scripts": {
+    "dev": "node dev-proxy.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
+  }
+}

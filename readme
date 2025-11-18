@@ -1,74 +1,103 @@
-# Projeto de Redes - API de Sessão Centralizada
+# Projeto de Redes — API de Sessão Centralizada
 
-Este projeto é focado em demonstrar o gerenciamento de sessão de usuário em um ambiente distribuído.
+API de exemplo em Spring Boot que demonstra gerenciamento de sessão centralizada (usuários, sessões armazenadas em PostgreSQL) — útil para estudar autenticação em ambientes distribuídos e balanceamento de carga.
 
-A API é construída em Spring Boot e utiliza um banco de dados PostgreSQL para armazenar usuários e sessões ativas. O objetivo é simular como um usuário pode permanecer logado mesmo quando um balanceador de carga (DNS Round Robin) o direciona para diferentes servidores.
+## Tecnologias
 
----
-
-## Tecnologias Utilizadas
-
-* Java 17
-* Spring Boot
-* PostgreSQL
-* Docker
-
----
+- Java 17
+- Spring Boot
+- PostgreSQL
+- Docker / Docker Compose
+- (Opcional) Node.js para servidor de desenvolvimento do frontend
 
 ## Pré-requisitos
 
-Para rodar este projeto, você **só precisa** ter duas coisas instaladas na sua máquina:
+- Git
+- Docker (ou Docker Desktop)
+- (Opcional) Node.js & npm — apenas se quiser rodar o frontend localmente sem container
 
-1.  **Git** (para baixar o projeto)
-2.  **Docker Desktop** (para construir e rodar os servidores)
+## Variáveis de ambiente
 
-O docker vai cuidar sozinho dos outros requisitos
+Crie um arquivo `.env` na raiz do projeto com as variáveis usadas pelo `docker-compose.yml`:
 
----
+```env
+DB_USER=seu_usuario
+DB_PASS=sua_senha
+DB_NAME=nome_do_banco
+```
 
-## Como Rodar (Passo a Passo)
+Não comite esse arquivo.
 
-Este projeto é 100% "Dockerizado". Siga estes passos para ter o ambiente completo (API + Banco de Dados) rodando com um único comando.
+## Como rodar (modo recomendado: Docker)
 
-### 1. Clone o Repositório
-
-Abra seu terminal e clone este projeto:
+1. Na raiz do projeto, com o Docker ativo:
 
 ```bash
-git clone https://github.com/fd4dg4br1/Arquitetura-Distribuida-DNS.git
-cd Arquitetura-Distribuida-DNS
+docker compose up --build
+```
+
+2. Aguarde até que o container da aplicação Spring inicialize. Você deverá ver logs indicando que o Tomcat iniciou e a aplicação está pronta.
+
+3. A API estará disponível em: `http://localhost:8080`
+
+## Rodando frontend e backend separados (desenvolvimento)
+
+Existem duas opções para desenvolver com front e back separados:
+
+- Opção A (recomendada para dev): usar o `dev-proxy` (Express) que serve o frontend e encaminha `/api` para o backend.
+
+  - Instale dependências: `npm install`
+  - Garanta que o backend esteja rodando em `http://localhost:8080` (ex.: `./mvnw spring-boot:run`)
+  - Rode o proxy: `npm run dev` ou via Docker Compose: `docker compose -f docker-compose.dev.yml up --build`
+  - Acesse o frontend em: `http://localhost:5500/index.html`
+
+- Opção B (servir frontend pelo backend): copie os arquivos de `frontend/` para `src/main/resources/static/` e rode o backend (Spring servirá o frontend). Útil quando quer same-origin e cookies sem proxy.
+
+Observação sobre cookies e CORS
+
+- Se frontend e backend estiverem em origens diferentes, o backend já foi configurado para permitir CORS durante o desenvolvimento. Entretanto, cookies cross-site normalmente requerem `SameSite=None; Secure` (e HTTPS). O dev-proxy evita essa necessidade porque reescreve o cookie para o host do proxy.
+
+## Testes rápidos (curl)
+
+- Fazer login (salva cookie em cookies.txt):
+
+```bash
+curl -i -c cookies.txt -X POST 'http://localhost:5500/api/login' \
+	-H 'Content-Type: application/json' \
+	-d '{"username":"user1","password":"123"}'
+```
+
+- Consultar perfil usando cookie salvo:
+
+```bash
+curl -i -b cookies.txt -X GET 'http://localhost:5500/api/meu-perfil'
+```
+
+Se você estiver servindo o frontend diretamente pelo backend (mesma origem em `localhost:8080`), use `http://localhost:8080` nas URLs acima.
+
+## Documentação (Swagger)
+
+Se a aplicação estiver rodando, abra: `http://localhost:8080/swagger-ui/index.html`
+
+## Desenvolvimento e builds locais
+
+- Para rodar apenas o backend sem Docker:
+
+  - `./mvnw spring-boot:run` (na raiz do projeto)
+
+- Para construir o JAR:
+  - `./mvnw -DskipTests package`
+
+## Problemas comuns e solução
+
+- Erro CORS / preflight: verifique se o backend está rodando e que a configuração CORS permite sua origem (em dev configuramos `allowedOriginPatterns("*")`).
+- Cookie não enviado: se frontend e backend estiverem em origens diferentes, o navegador exige `credentials: 'include'` e `Access-Control-Allow-Credentials: true`. Para cookies cross-site em HTTP local, prefira usar o dev-proxy ou servir o frontend pelo backend.
+- Porta 80 em Linux: portas <1024 exigem root. No `application.yaml` o servidor foi configurado para 8080 para evitar isso.
+
+## Contribuição
+
+- Faça um fork, crie uma branch e abra um Pull Request. Mensagens de commit claras e PRs pequenos ajudam na revisão.
 
 ---
 
-### 2. Crie o Arquivo ".env"
-Nós não enviamos senhas para o GitHub (graças ao .gitignore). Você precisa criar seu próprio arquivo de segredos localmente. Este é o único passo manual.
-
-Na pasta raiz do projeto (onde você acabou de entrar), crie um novo arquivo chamado exatamente .env
-
-Copie e cole o conteúdo abaixo dentro dele:
-
-'''bash
-DB_USER=nome-de-usuario
-DB_PASS=senha
-DB_NAME=nome-do-banco-de-dados
-'''
-
-(Por que isso? O arquivo docker-compose.yml vai ler essas variáveis para configurar o banco de dados e a sua aplicação Spring automaticamente, sem expor as senhas no código.)
-
-### 3. Suba o Ambiente (O Comando Mágico)
-Com o Docker Desktop aberto, rode o seguinte comando no seu **terminal**:
-
-'''bash
-
-docker-compose up --build
-'''
-
-Haverá um contêiner para o Banco de Dados PostgreSQL;
-Um contêiner para a API Spring Boot;
-
-### 4. Tudo Pronto!
-Se o terminal mostrar os logs da sua DnsApplication (Spring) sem erros, significa que a API está rodando e conectada ao banco!
-
-## Como Testar (Usando o Swagger)
-
-Abra seu navegador e acesse a documentação da API (Swagger): http://localhost:8080/swagger-ui/index.html
+Se quiser, eu posso adicionar instruções automáticas para rodar o ambiente de dev proxy em Docker, ou gerar scripts de conveniência para `npm install` / `docker compose`.

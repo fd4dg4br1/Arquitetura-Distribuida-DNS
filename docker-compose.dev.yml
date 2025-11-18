@@ -1,0 +1,18 @@
+services:
+  dev-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev-proxy
+    image: arquitetura-dev-proxy:latest
+    ports:
+      - "5500:5500"
+    environment:
+      # BACKEND_URL pode ser sobrescrito se o backend estiver em outro container/host
+      - BACKEND_URL=http://host.docker.internal:8080
+    volumes:
+      - ./frontend:/usr/src/app/frontend:delegated
+      - ./dev-proxy.js:/usr/src/app/dev-proxy.js:ro
+      - ./package.json:/usr/src/app/package.json:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped

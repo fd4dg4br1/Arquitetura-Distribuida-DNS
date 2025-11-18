@@ -9,6 +9,12 @@ function showSection(sectionId) {
   document.getElementById(sectionId).classList.add("active");
   clearMessages();
 }
+// Quando mostramos a seção de perfil, carregamos os dados do servidor.
+function showProfileSection() {
+  showSection("profile");
+  // carregar os dados do perfil (assíncrono)
+  loadProfile();
+}
 
 // ===== MENSAGENS =====
 function showMsg(elementId, message, type = "error") {
@@ -67,7 +73,7 @@ async function handleLogin(event) {
       document.getElementById("loginUsername").value = "";
       document.getElementById("loginPassword").value = "";
       updateNavigation(true);
-      setTimeout(() => showSection("profile"), 1500);
+      setTimeout(() => showProfileSection(), 1500);
     } else if (response.status === 401) {
       showMsg("loginError", respText || "Usuário ou senha inválidos");
     } else {
@@ -93,6 +99,7 @@ async function handleRegister(event) {
   event.preventDefault();
 
   const username = document.getElementById("regUsername").value.trim();
+  const nomeUsuario = document.getElementById("regName").value.trim();
   const password = document.getElementById("regPassword").value.trim();
   const confirm = document.getElementById("regConfirm").value.trim();
 
@@ -103,11 +110,6 @@ async function handleRegister(event) {
 
   if (username.length < 3) {
     showMsg("registerError", "Usuário deve ter pelo menos 3 caracteres");
-    return;
-  }
-
-  if (password.length < 6) {
-    showMsg("registerError", "Senha deve ter pelo menos 6 caracteres");
     return;
   }
 
@@ -123,7 +125,7 @@ async function handleRegister(event) {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ nomeUsuario, username, password }),
     });
 
     if (response.ok || response.status === 201) {
@@ -134,6 +136,7 @@ async function handleRegister(event) {
         "success"
       );
       document.getElementById("regUsername").value = "";
+      document.getElementById("regName").value = "";
       document.getElementById("regPassword").value = "";
       document.getElementById("regConfirm").value = "";
 
