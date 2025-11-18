@@ -19,7 +19,7 @@ services:
     build: . 
     container_name: backend-app1-redes
     ports:
-      - "8080:80" 
+      - "8080:8080" 
     depends_on:
       - db 
     environment:
@@ -39,7 +39,7 @@ services:
     build: . 
     container_name: backend-app2-redes
     ports:
-      - "8081:80" 
+      - "8081:8080" 
     depends_on:
       - db 
     environment:
@@ -59,7 +59,7 @@ services:
     build: . 
     container_name: backend-app3-redes
     ports:
-      - "8082:80" 
+      - "8082:8080" 
     depends_on:
       - db 
     environment:
