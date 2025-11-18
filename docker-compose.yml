@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   db:
@@ -14,41 +13,78 @@ services:
       - rede-do-trabalho
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      
       - ./init-db:/docker-entrypoint-initdb.d
 
-  app:
+  app1:
     build: . 
-    container_name: backend-app-redes
+    container_name: backend-app1-redes
     ports:
-      - "8080:8080" 
+      - "8080:80" 
     depends_on:
       - db 
     environment:
-      # --- Configuração do Banco (lendo do .env) ---
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
-      
-      # --- AQUI ESTÁ A CORREÇÃO ---
-      # Força TODAS as configurações do JPA, ignorando o .yml
-      # 1. Força a criação/atualização das tabelas
       - spring.jpa.hibernate.ddl-auto=update
-      
-      # 2. Mostra o SQL (bom para debug)
       - spring.jpa.show-sql=true
-      
-      # 3. Força o nome do Schema (minúsculo)
       - spring.jpa.properties.hibernate.default_schema=dns
-      
-      # 4. Força a correção de "case sensitive"
       - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      
     networks:
       - rede-do-trabalho
+    # Informa ao app1 para usar o BIND9 como seu servidor DNS
+    dns: 172.20.0.10
+
+  app2:
+    build: . 
+    container_name: backend-app2-redes
+    ports:
+      - "8081:80" 
+    depends_on:
+      - db 
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.jpa.show-sql=true
+      - spring.jpa.properties.hibernate.default_schema=dns
+      - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    networks:
+      - rede-do-trabalho
+    # Informa ao app2 para usar o BIND9 como seu servidor DNS
+    dns: 172.20.0.10
+
+  app3:
+    build: . 
+    container_name: backend-app3-redes
+    ports:
+      - "8082:80" 
+    depends_on:
+      - db 
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.jpa.show-sql=true
+      - spring.jpa.properties.hibernate.default_schema=dns
+      - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    networks:
+      - rede-do-trabalho
+    # Informa ao app3 para usar o BIND9 como seu servidor DNS
+    dns: 172.20.0.10
+
 
 networks:
   rede-do-trabalho:
     driver: bridge
+    # Define uma sub-rede para que possamos atribuir um IP estático ao BIND9
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
 volumes:
   postgres-data:
+  bind-cache:
+  bind-logs:
