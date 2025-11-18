@@ -1,24 +1,25 @@
 # Projeto de Redes — API de Sessão Centralizada
 
-API de exemplo em Spring Boot que demonstra gerenciamento de sessão centralizada (usuários, sessões armazenadas em PostgreSQL) — útil para estudar autenticação em ambientes distribuídos e balanceamento de carga.
+API de exemplo em **Spring Boot** demonstrando **gerenciamento de sessão centralizada** (usuários e sessões armazenadas em **PostgreSQL**).
+Ideal para estudos de **autenticação**, **ambientes distribuídos** e **balanceamento de carga**.
 
-## Tecnologias
+## 🚀 Tecnologias
 
-- Java 17
-- Spring Boot
-- PostgreSQL
-- Docker / Docker Compose
-- (Opcional) Node.js para servidor de desenvolvimento do frontend
+* Java 17
+* Spring Boot
+* PostgreSQL
+* Docker / Docker Compose
+* (Opcional) Node.js para ambiente de desenvolvimento do frontend
 
-## Pré-requisitos
+## 📦 Pré-requisitos
 
-- Git
-- Docker (ou Docker Desktop)
-- (Opcional) Node.js & npm — apenas se quiser rodar o frontend localmente sem container
+* Git
+* Docker (ou Docker Desktop)
+* (Opcional) Node.js + npm — caso deseje rodar o frontend localmente sem containers
 
-## Variáveis de ambiente
+## 🔧 Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do projeto com as variáveis usadas pelo `docker-compose.yml`:
+Crie um arquivo `.env` na raiz do projeto com:
 
 ```env
 DB_USER=seu_usuario
@@ -26,78 +27,144 @@ DB_PASS=sua_senha
 DB_NAME=nome_do_banco
 ```
 
-Não comite esse arquivo.
+> **Importante:** não faça commit desse arquivo.
 
-## Como rodar (modo recomendado: Docker)
+---
 
-1. Na raiz do projeto, com o Docker ativo:
+## ▶️ Como Rodar (Recomendado: Docker)
+
+Na raiz do projeto, execute:
 
 ```bash
 docker compose up --build
 ```
 
-2. Aguarde até que o container da aplicação Spring inicialize. Você deverá ver logs indicando que o Tomcat iniciou e a aplicação está pronta.
+Após a inicialização, a API estará disponível em:
 
-3. A API estará disponível em: `http://localhost:8080`
+👉 **[http://localhost:8080](http://localhost:8080)**
 
-## Rodando frontend e backend separados (desenvolvimento)
+---
 
-Existem duas opções para desenvolver com front e back separados:
+## 💻 Desenvolvimento: Frontend + Backend Separados
 
-- Opção A (recomendada para dev): usar o `dev-proxy` (Express) que serve o frontend e encaminha `/api` para o backend.
+Você pode rodar front e back de duas formas:
 
-  - Instale dependências: `npm install`
-  - Garanta que o backend esteja rodando em `http://localhost:8080` (ex.: `./mvnw spring-boot:run`)
-  - Rode o proxy: `npm run dev` ou via Docker Compose: `docker compose -f docker-compose.dev.yml up --build`
-  - Acesse o frontend em: `http://localhost:5500/index.html`
+### **Opção A — Dev Proxy (recomendado)**
 
-- Opção B (servir frontend pelo backend): copie os arquivos de `frontend/` para `src/main/resources/static/` e rode o backend (Spring servirá o frontend). Útil quando quer same-origin e cookies sem proxy.
+O proxy (Node.js/Express) serve o frontend e redireciona requisições `/api` para o backend.
 
-Observação sobre cookies e CORS
+1. Instalar dependências:
 
-- Se frontend e backend estiverem em origens diferentes, o backend já foi configurado para permitir CORS durante o desenvolvimento. Entretanto, cookies cross-site normalmente requerem `SameSite=None; Secure` (e HTTPS). O dev-proxy evita essa necessidade porque reescreve o cookie para o host do proxy.
+   ```bash
+   npm install
+   ```
+2. Subir o backend:
 
-## Testes rápidos (curl)
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+3. Rodar o proxy:
 
-- Fazer login (salva cookie em cookies.txt):
+   ```bash
+   npm run dev
+   ```
+
+   ou via Docker:
+
+   ```bash
+   docker compose -f docker-compose.dev.yml up --build
+   ```
+
+Acesse o frontend em:
+
+👉 **[http://localhost:5500/index.html](http://localhost:5500/index.html)**
+
+---
+
+### **Opção B — Servir o Frontend pelo Backend**
+
+Copie os arquivos de `frontend/` para:
+
+```
+src/main/resources/static/
+```
+
+Depois rode:
+
+```bash
+./mvnw spring-boot:run
+```
+
+O próprio Spring servirá os arquivos estáticos (útil para evitar CORS e lidar diretamente com cookies same-origin).
+
+---
+
+## 🍪 Observações sobre CORS e Cookies
+
+* Em origens diferentes, cookies normalmente exigem:
+  `SameSite=None; Secure` (HTTPS).
+* Durante o desenvolvimento, o backend já permite CORS de forma ampla.
+* O dev-proxy reescreve cookies, evitando problemas de cross-site.
+
+---
+
+## 🔍 Testes Rápidos (curl)
+
+### Login (salvando cookie):
 
 ```bash
 curl -i -c cookies.txt -X POST 'http://localhost:5500/api/login' \
-	-H 'Content-Type: application/json' \
-	-d '{"username":"user1","password":"123"}'
+  -H 'Content-Type: application/json' \
+  -d '{"username":"user1","password":"123"}'
 ```
 
-- Consultar perfil usando cookie salvo:
+### Consultar o perfil:
 
 ```bash
 curl -i -b cookies.txt -X GET 'http://localhost:5500/api/meu-perfil'
 ```
 
-Se você estiver servindo o frontend diretamente pelo backend (mesma origem em `localhost:8080`), use `http://localhost:8080` nas URLs acima.
-
-## Documentação (Swagger)
-
-Se a aplicação estiver rodando, abra: `http://localhost:8080/swagger-ui/index.html`
-
-## Desenvolvimento e builds locais
-
-- Para rodar apenas o backend sem Docker:
-
-  - `./mvnw spring-boot:run` (na raiz do projeto)
-
-- Para construir o JAR:
-  - `./mvnw -DskipTests package`
-
-## Problemas comuns e solução
-
-- Erro CORS / preflight: verifique se o backend está rodando e que a configuração CORS permite sua origem (em dev configuramos `allowedOriginPatterns("*")`).
-- Cookie não enviado: se frontend e backend estiverem em origens diferentes, o navegador exige `credentials: 'include'` e `Access-Control-Allow-Credentials: true`. Para cookies cross-site em HTTP local, prefira usar o dev-proxy ou servir o frontend pelo backend.
-- Porta 80 em Linux: portas <1024 exigem root. No `application.yaml` o servidor foi configurado para 8080 para evitar isso.
-
-## Contribuição
-
-- Faça um fork, crie uma branch e abra um Pull Request. Mensagens de commit claras e PRs pequenos ajudam na revisão.
+Se estiver usando o frontend servido pelo backend, troque `5500` por `8080`.
 
 ---
 
-Se quiser, eu posso adicionar instruções automáticas para rodar o ambiente de dev proxy em Docker, ou gerar scripts de conveniência para `npm install` / `docker compose`.
+## 📘 Documentação (Swagger)
+
+Com a aplicação rodando:
+
+👉 **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
+
+---
+
+## 🛠 Desenvolvimento e Builds Locais
+
+### Rodar apenas o backend (sem Docker):
+
+```bash
+./mvnw spring-boot:run
+```
+
+### Gerar o JAR:
+
+```bash
+./mvnw -DskipTests package
+```
+
+---
+
+## 🐞 Problemas Comuns e Soluções
+
+* **Erro CORS / Preflight:**
+  Verifique se o backend está rodando e se a origem está permitida (`allowedOriginPatterns("*")` em dev).
+
+* **Cookie não enviado:**
+
+  * Use `credentials: 'include'` no frontend.
+  * Backend precisa de `Access-Control-Allow-Credentials: true`.
+  * Para evitar problemas em HTTP local, prefira o dev-proxy.
+
+* **Porta 80 no Linux:**
+  Portas <1024 exigem root.
+  O projeto usa padrão **8080** para evitar isso.
+
+
