@@ -100,23 +100,23 @@ Se não quiser configurar isso, acesse via **localhost**.
 
 ### 5. Como Testar (Usando o Swagger)
 
-### 1. Acessar o Sistema (Frontend)
-Abra o navegador e acesse:
-* **Com domínio configurado:** [http://www.meutrabalho.com.br](http://www.meutrabalho.com.br)
-* **Sem domínio (Local):** [http://localhost](http://localhost)
+1. Acessar o Sistema (Frontend)
+    Abra o navegador e acesse:
+    * **Com domínio configurado:** [http://www.meutrabalho.com.br](http://www.meutrabalho.com.br)
+    * **Sem domínio (Local):** [http://localhost](http://localhost)
 
-### 2. Documentação da API (Swagger)
-Para testar os endpoints do Backend diretamente, você pode acessar qualquer um dos 3 servidores:
-* **Servidor 1:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-* **Servidor 2:** [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
-* **Servidor 3:** [http://localhost:8082/swagger-ui/index.html](http://localhost:8082/swagger-ui/index.html)
+2. Documentação da API (Swagger)
+    Para testar os endpoints do Backend diretamente, você pode acessar qualquer um dos 3 servidores:
+    * **Servidor 1:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+    * **Servidor 2:** [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
+    * **Servidor 3:** [http://localhost:8082/swagger-ui/index.html](http://localhost:8082/swagger-ui/index.html)
 
-### 3. Testar o DNS (Round Robin)
-Para provar que o DNS está distribuindo os IPs, abra o terminal (CMD) e digite:
-
-```bash
-nslookup api.meutrabalho.com.br 127.0.0.1
-```
+3. Testar o DNS (Round Robin)
+    Para provar que o DNS está distribuindo os IPs, abra o terminal (CMD) e digite:
+    
+    ```bash
+    nslookup api.meutrabalho.com.br 127.0.0.1
+    ```
 
 ---
 ---
