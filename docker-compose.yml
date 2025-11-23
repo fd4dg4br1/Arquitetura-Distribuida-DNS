@@ -10,6 +10,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
+      - TZ=America/Sao_Paulo
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./init-db:/docker-entrypoint-initdb.d
@@ -38,6 +39,7 @@ services:
       - spring.jpa.show-sql=true
       - spring.jpa.properties.hibernate.default_schema=dns
       - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      - TZ=America/Sao_Paulo
     networks:
       rede-do-trabalho:
         ipv4_address: 172.20.0.3
@@ -57,6 +59,7 @@ services:
       - spring.jpa.hibernate.ddl-auto=update
       - spring.jpa.properties.hibernate.default_schema=dns
       - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      - TZ=America/Sao_Paulo
     networks:
       rede-do-trabalho:
         ipv4_address: 172.20.0.4
@@ -76,6 +79,7 @@ services:
       - spring.jpa.hibernate.ddl-auto=update
       - spring.jpa.properties.hibernate.default_schema=dns
       - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      - TZ=America/Sao_Paulo
     networks:
       rede-do-trabalho:
         ipv4_address: 172.20.0.5
@@ -85,7 +89,7 @@ services:
     image: nginx:latest
     container_name: frontend-app
     ports:
-      - "3000:80"
+      - "80:80"
     volumes:
       - ./frontend:/usr/share/nginx/html
       - ./frontend/nginx.conf:/etc/nginx/nginx.conf
