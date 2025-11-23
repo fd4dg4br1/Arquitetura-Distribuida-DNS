@@ -85,7 +85,20 @@ Quando vir a mensagem Started DnsApplication nos logs, o sistema está pronto.
 
 ---
 
-### 4. Como Testar (Usando o Swagger)
+### 4. Configuração do Domínio (Opcional)
+Para acessar via www.meutrabalho.com.br, adicione a seguinte linha ao seu arquivo hosts do Windows (C:\Windows\System32\drivers\etc\hosts):
+
+```bash
+127.0.0.1       https://www.meutrabalho.com.br
+127.0.0.1       api.meutrabalho.com.br
+```
+Se não quiser configurar isso, acesse via **localhost**.
+
+
+---
+
+### 5. Como Testar (Usando o Swagger)
+
 Abra seu navegador e acesse a documentação da API: [Swagger](http://localhost:8080/swagger-ui/index.html)
 
 
