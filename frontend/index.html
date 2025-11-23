@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Autenticação</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1></h1>
+            </div>
+            <ul class="navbar-menu" id="navMenu">
+                <li id="navLogin"><a href="#" onclick="showSection('login')">Login</a></li>
+                <li id="navRegister"><a href="#" onclick="showSection('register')">Registrar</a></li>
+                <li id="navProfile" style="display:none"><a href="#" onclick="showProfileSection()">Meu Perfil</a></li>
+                <li id="navLogout" style="display:none"><a href="#" onclick="doLogout(event)">Sair</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="login" class="auth-section active">
+            <div class="auth-box">
+                <h2>Fazer Login</h2>
+                <p class="subtitle">Acesse sua conta com suas credenciais</p>
+
+                <div id="loginError" class="message error-msg"></div>
+                <div id="loginSuccess" class="message success-msg"></div>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Usuário:</label>
+                        <input type="text" id="loginUsername" placeholder="Digite seu usuário" required>
+                     </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Senha:</label>
+                        <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+
+                <p class="auth-link">Não tem conta? <a href="#" onclick="showSection('register')">Crie uma agora</a></p>
+            </div>
+        </section>
+
+        <section id="register" class="auth-section">
+            <div class="auth-box">
+                <h2>Criar Nova Conta</h2>
+                <p class="subtitle">Registre-se para começar a usar o sistema</p>
+
+                <div id="registerError" class="message error-msg"></div>
+                <div id="registerSuccess" class="message success-msg"></div>
+
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="regUsername">Usuário:</label>
+                        <input type="text" id="regUsername" placeholder="Escolha um usuário" minlength="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regUsername">Nome:</label>
+                        <input type="text" id="regName" placeholder="Digite seu nome" minlength="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Senha:</label>
+                        <input type="password" id="regPassword" placeholder="Crie uma senha" minlength="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfirm">Confirmar Senha:</label>
+                        <input type="password" id="regConfirm" placeholder="Confirme sua senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </form>
+
+                <p class="auth-link">Já tem conta? <a href="#" onclick="showSection('login')">Faça login</a></p>
+            </div>
+        </section>
+
+        <section id="profile" class="auth-section">
+            <div class="profile-box">
+                <div class="profile-header">
+                    <h2>Meu Perfil</h2>
+                    <button class="btn btn-secondary" onclick="doLogout(event)">Sair da Conta</button>
+                </div>
+
+                <div id="profileError" class="message error-msg"></div>
+
+                <div id="profileLoading" class="loading-container">
+                    <div class="spinner"></div>
+                    <p>Carregando seu perfil...</p>
+                </div>
+
+                <div id="profileContent" class="profile-content" style="display:none">
+                    <div class="profile-card">
+                        <div class="profile-avatar">👤</div>
+                        <h3 id="profileName"></h3>
+
+                        <div class="profile-info">
+                            
+                            
+                            <div class="profile-info">
+                            <div class="info-item">
+                                <span class="info-label">Nome:</span>
+                                <span class="info-value" id="displayNome"></span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">ID Sessão:</span>
+                                <span class="info-value" id="displaySessao" style="font-family: monospace; font-size: 12px;"></span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Logado em:</span>
+                                <span class="info-value" id="displayData"></span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Servidor Atual:</span>
+                                <span class="info-value status-badge" id="displayHostname" style="background: #ffedea; color: #ff5b5b;"></span>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value status-badge">✓ Ativo</span>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

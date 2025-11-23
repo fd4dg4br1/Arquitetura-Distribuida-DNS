@@ -1,0 +1,21 @@
+$TTL    604800
+@       IN      SOA     ns.meutrabalho.com.br. root.meutrabalho.com.br. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+; Servidor de Nomes (O próprio DNS)
+@       IN      NS      ns.meutrabalho.com.br.
+ns      IN      A       172.20.0.10
+
+; --- O BALANCEAMENTO ROUND ROBIN ---
+; Aqui apontamos o subdomínio 'api' para os 3 servidores Backend
+api     IN      A       172.20.0.3
+api     IN      A       172.20.0.4
+api     IN      A       172.20.0.5
+
+; --- O FRONTEND ---
+; Apontamos 'www' para o servidor Nginx (Front)
+www     IN      A       172.20.0.6

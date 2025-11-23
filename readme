@@ -41,9 +41,10 @@ cd Arquitetura-Distribuida-DNS
 ---
 
 ### 2. Crie o Arquivo ".env"
+Passo de extrema importância! 
 Nós não enviamos senhas para o GitHub (graças ao .gitignore). Você precisa criar seu próprio arquivo de segredos localmente. Este é o único passo manual.
 
-Na pasta raiz do projeto (onde você acabou de entrar), crie um novo arquivo chamado exatamente .env
+Na pasta raiz do projeto (onde você acabou de entrar), crie um novo arquivo chamado exatamente ".env"
 
 Copie e cole o conteúdo abaixo dentro dele:
 
@@ -55,8 +56,10 @@ DB_NAME=nome-do-banco-de-dados
 
 (Por que isso? O arquivo docker-compose.yml vai ler essas variáveis para configurar o banco de dados e a sua aplicação Spring automaticamente, sem expor as senhas no código.)
 
-### 3. Suba o Ambiente (O Comando Mágico)
-Com o Docker Desktop aberto, rode o seguinte comando no seu **terminal**:
+---
+
+### 3. Suba o Ambiente
+Com o Docker Desktop aberto, rode o seguinte comando no seu terminal:
 
 '''bash
 
@@ -66,9 +69,10 @@ docker-compose up --build
 Haverá um contêiner para o Banco de Dados PostgreSQL;
 Um contêiner para a API Spring Boot;
 
+---
+
 ### 4. Tudo Pronto!
 Se o terminal mostrar os logs da sua DnsApplication (Spring) sem erros, significa que a API está rodando e conectada ao banco!
 
 ## Como Testar (Usando o Swagger)
-
 Abra seu navegador e acesse a documentação da API (Swagger): http://localhost:8080/swagger-ui/index.html

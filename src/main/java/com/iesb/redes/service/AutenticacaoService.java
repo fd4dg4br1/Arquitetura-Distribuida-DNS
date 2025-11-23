@@ -87,9 +87,6 @@ public class AutenticacaoService {
         Usuario novoUsuario = new Usuario();
         novoUsuario.setUsername(dto.getUsername());
         
-        // --- ADICIONE ESTA LINHA ---
-        novoUsuario.setNomeUsuario(dto.getNomeUsuario()); 
-        // -------------------------
 
         this.criarUsuario(novoUsuario, dto.getPassword());
         return novoUsuario;
