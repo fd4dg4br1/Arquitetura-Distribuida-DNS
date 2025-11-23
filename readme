@@ -4,14 +4,28 @@ Este projeto é focado em demonstrar o gerenciamento de sessão de usuário em u
 
 A API é construída em Spring Boot e utiliza um banco de dados PostgreSQL para armazenar usuários e sessões ativas. O objetivo é simular como um usuário pode permanecer logado mesmo quando um balanceador de carga (DNS Round Robin) o direciona para diferentes servidores.
 
+O sistema atende aos seguintes requisitos:
+* **3 Servidores HTTP (Backend):** Distribuição de carga.
+* **Banco de Dados Centralizado:** Persistência de usuários e sessões.
+* **DNS Round Robin:** Balanceamento de carga na camada de rede.
+* **Sessão Compartilhada:** O usuário permanece logado independente de qual servidor o atenda.
+
 ---
+
+## Integrantes
+- Arthur Ferraz
+- Beatriz Brito
+- Gabriel Alves
+- Thawã Borges
 
 ## Tecnologias Utilizadas
 
-* Java 17
-* Spring Boot
-* PostgreSQL
-* Docker
+* **Java 17 & Spring Boot 3**
+* **PostgreSQL**
+* **Nginx** Servidor de Frontend (Proxy Reverso)
+* **BIND9** Servidor DNS
+* **Docker & Docker Compose**
+* **HTML/CSS/JS**
 
 ---
 
@@ -28,8 +42,6 @@ O docker vai cuidar sozinho dos outros requisitos
 
 ## Como Rodar (Passo a Passo)
 
-Este projeto é 100% "Dockerizado". Siga estes passos para ter o ambiente completo (API + Banco de Dados) rodando com um único comando.
-
 ### 1. Clone o Repositório
 
 Abra seu terminal e clone este projeto:
@@ -37,14 +49,15 @@ Abra seu terminal e clone este projeto:
 ```bash
 git clone https://github.com/fd4dg4br1/Arquitetura-Distribuida-DNS.git
 cd Arquitetura-Distribuida-DNS
+```
 
 ---
 
 ### 2. Crie o Arquivo ".env"
-Passo de extrema importância! 
-Nós não enviamos senhas para o GitHub (graças ao .gitignore). Você precisa criar seu próprio arquivo de segredos localmente. Este é o único passo manual.
 
-Na pasta raiz do projeto (onde você acabou de entrar), crie um novo arquivo chamado exatamente ".env"
+Por segurança, as senhas não estão no GitHub. Você precisa criar este arquivo manualmente.
+
+Na raiz do projeto (junto com o docker-compose.yml), crie um arquivo chamado .env
 
 Copie e cole o conteúdo abaixo dentro dele:
 
@@ -59,20 +72,49 @@ DB_NAME=nome-do-banco-de-dados
 ---
 
 ### 3. Suba o Ambiente
-Com o Docker Desktop aberto, rode o seguinte comando no seu terminal:
+Com o *Docker Desktop aberto*, rode o seguinte comando no seu terminal:
 
 '''bash
 
 docker-compose up --build
 '''
 
-Haverá um contêiner para o Banco de Dados PostgreSQL;
-Um contêiner para a API Spring Boot;
+Aguarde alguns minutos. O Docker irá baixar as imagens, compilar o código Java, iniciar o banco de dados, criar as tabelas automaticamente e subir os 3 servidores de aplicação + DNS + Frontend.
+
+Quando vir a mensagem Started DnsApplication nos logs, o sistema está pronto.
 
 ---
 
-### 4. Tudo Pronto!
-Se o terminal mostrar os logs da sua DnsApplication (Spring) sem erros, significa que a API está rodando e conectada ao banco!
+### 4. Como Testar (Usando o Swagger)
+Abra seu navegador e acesse a documentação da API: [Swagger](http://localhost:8080/swagger-ui/index.html)
 
-## Como Testar (Usando o Swagger)
-Abra seu navegador e acesse a documentação da API (Swagger): http://localhost:8080/swagger-ui/index.html
+
+---
+
+
+
+## 🐧 Instruções para Usuários Linux / Mac
+
+O processo é o mesmo, com pequenas diferenças:
+
+1.  **Permissões:** Pode ser necessário usar `sudo` antes dos comandos docker:
+    ```bash
+    sudo docker compose up --build
+    ```
+
+2.  **Arquivo Hosts:**
+    Edite o arquivo `/etc/hosts` para configurar o domínio:
+
+    Abra o terminal.
+    Digite: sudo nano /etc/hosts
+    Adicione as linhas no final:
+    ```bash
+    127.0.0.1       www.meutrabalho.com.br
+    127.0.0.1       api.meutrabalho.com.br
+    ```
+
+3.  **Conflito de Porta 53 (DNS):**
+    Se der erro ao subir o BIND9, pare o resolvedor do sistema:
+    ```bash
+    sudo systemctl stop systemd-resolved
+    ```
