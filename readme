@@ -61,11 +61,11 @@ Na raiz do projeto (junto com o docker-compose.yml), crie um arquivo chamado .en
 
 Copie e cole o conteúdo abaixo dentro dele:
 
-'''bash
+```bash
 DB_USER=nome-de-usuario
 DB_PASS=senha
 DB_NAME=nome-do-banco-de-dados
-'''
+```
 
 (Por que isso? O arquivo docker-compose.yml vai ler essas variáveis para configurar o banco de dados e a sua aplicação Spring automaticamente, sem expor as senhas no código.)
 
@@ -74,10 +74,10 @@ DB_NAME=nome-do-banco-de-dados
 ### 3. Suba o Ambiente
 Com o *Docker Desktop aberto*, rode o seguinte comando no seu terminal:
 
-'''bash
+```bash
 
 docker-compose up --build
-'''
+```
 
 Aguarde alguns minutos. O Docker irá baixar as imagens, compilar o código Java, iniciar o banco de dados, criar as tabelas automaticamente e subir os 3 servidores de aplicação + DNS + Frontend.
 
@@ -89,9 +89,10 @@ Quando vir a mensagem Started DnsApplication nos logs, o sistema está pronto.
 Para acessar via www.meutrabalho.com.br, adicione a seguinte linha ao seu arquivo hosts do Windows (C:\Windows\System32\drivers\etc\hosts):
 
 ```bash
-127.0.0.1       https://www.meutrabalho.com.br
+127.0.0.1       www.meutrabalho.com.br
 127.0.0.1       api.meutrabalho.com.br
 ```
+
 Se não quiser configurar isso, acesse via **localhost**.
 
 
@@ -99,11 +100,26 @@ Se não quiser configurar isso, acesse via **localhost**.
 
 ### 5. Como Testar (Usando o Swagger)
 
-Abra seu navegador e acesse a documentação da API: [Swagger](http://localhost:8080/swagger-ui/index.html)
+### 1. Acessar o Sistema (Frontend)
+Abra o navegador e acesse:
+* **Com domínio configurado:** [http://www.meutrabalho.com.br](http://www.meutrabalho.com.br)
+* **Sem domínio (Local):** [http://localhost](http://localhost)
 
+### 2. Documentação da API (Swagger)
+Para testar os endpoints do Backend diretamente, você pode acessar qualquer um dos 3 servidores:
+* **Servidor 1:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+* **Servidor 2:** [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
+* **Servidor 3:** [http://localhost:8082/swagger-ui/index.html](http://localhost:8082/swagger-ui/index.html)
+
+### 3. Testar o DNS (Round Robin)
+Para provar que o DNS está distribuindo os IPs, abra o terminal (CMD) e digite:
+
+```bash
+nslookup api.meutrabalho.com.br 127.0.0.1
+```
 
 ---
-
+---
 
 
 ## 🐧 Instruções para Usuários Linux / Mac
