@@ -147,3 +147,11 @@ O processo é o mesmo, com pequenas diferenças:
     ```bash
     sudo systemctl stop systemd-resolved
     ```
+
+---
+
+## Diagrama da Rede
+
+Abaixo está o mapa da infraestrutura distribuída, com os IPs fixos configurados no Docker:
+
+![Diagrama de Rede](assets/diagrama-de-rede.png)
