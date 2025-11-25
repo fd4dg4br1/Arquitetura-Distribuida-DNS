@@ -154,4 +154,4 @@ O processo é o mesmo, com pequenas diferenças:
 
 Abaixo está o mapa da infraestrutura distribuída, com os IPs fixos configurados no Docker:
 
-![Diagrama de Rede](assets/diagrama-de-rede.png)
+<img width="747" height="862" alt="diagrama-de-rede" src="https://github.com/user-attachments/assets/55746377-d5e4-46a4-972e-11778bd0963b" />
