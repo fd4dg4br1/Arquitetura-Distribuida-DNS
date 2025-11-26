@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db-redes
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - TZ=America/Sao_Paulo
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      rede-do-trabalho:
+        ipv4_address: 172.20.0.2
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app1:
+    build: .
+    container_name: backend-1
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.jpa.show-sql=true
+      - spring.jpa.properties.hibernate.default_schema=dns
+      - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      - TZ=America/Sao_Paulo
+    networks:
+      rede-do-trabalho:
+        ipv4_address: 172.20.0.3
+
+  app2:
+    build: .
+    container_name: backend-2
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.jpa.properties.hibernate.default_schema=dns
+      - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      - TZ=America/Sao_Paulo
+    networks:
+      rede-do-trabalho:
+        ipv4_address: 172.20.0.4
+
+  app3:
+    build: .
+    container_name: backend-3
+    ports:
+      - "8082:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
+      - spring.jpa.hibernate.ddl-auto=update
+      - spring.jpa.properties.hibernate.default_schema=dns
+      - spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      - TZ=America/Sao_Paulo
+    networks:
+      rede-do-trabalho:
+        ipv4_address: 172.20.0.5
+
+
+  frontend:
+    image: nginx:latest
+    container_name: frontend-app
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app1
+      - app2
+      - app3
+    networks:
+      rede-do-trabalho:
+        ipv4_address: 172.20.0.6
+
+  dns:
+    image: ubuntu/bind9
+    container_name: servidor-dns
+    platform: linux/amd64
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - ./dns-config/named.conf:/etc/bind/named.conf
+      - ./dns-config/db.meutrabalho.com.br:/etc/bind/db.meutrabalho.com.br
+    networks:
+      rede-do-trabalho:
+        ipv4_address: 172.20.0.10
+
+networks:
+  rede-do-trabalho:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres-data:
